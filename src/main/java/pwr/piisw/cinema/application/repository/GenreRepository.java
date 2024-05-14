@@ -16,6 +16,6 @@ public interface GenreRepository extends JpaRepository<Genre, Integer> {
     @Query("SELECT g FROM Genre g WHERE LOWER(g.name) = LOWER(:name)")
     List<Genre> findByNameIgnoreCase(@Param("name") String name);
 
-    @Query("SELECT COUNT(g) FROM Genre g WHERE g.name = :name")
-    Long countByName(@Param("name") String name);
+    @Query("SELECT g FROM Genre g WHERE g.name LIKE %:keyword%")
+    List<Genre> searchGenres(@Param("keyword") String keyword);
 }

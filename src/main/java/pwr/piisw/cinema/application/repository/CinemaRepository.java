@@ -26,12 +26,11 @@ public interface CinemaRepository extends JpaRepository<Cinema, Integer> {
     @Query(value = "SELECT c FROM Cinema c WHERE c.city = :city AND c.name = :name")
     List<Cinema> findCinemasByCityAndName(@Param("city") String city, @Param("name") String name);
 
-    @Query(value = "SELECT c FROM Cinema c WHERE c.name = :name")
-    List<Cinema> findCinemasByCityAndName(@Param("name") String name);
-
     @Modifying
     @Transactional
     @Query("delete from Cinema c where c.city = :city")
     void deleteCinemasByCity(@Param("city") String city);
 
+    @Query("SELECT c FROM Cinema c WHERE c.city LIKE %:keyword% OR c.name LIKE %:keyword% OR c.address LIKE %:keyword%")
+    List<Cinema> searchCinemas(@Param("keyword") String keyword);
 }
