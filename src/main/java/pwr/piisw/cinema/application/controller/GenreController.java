@@ -1,7 +1,8 @@
 package pwr.piisw.cinema.application.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pwr.piisw.cinema.application.entity.Genre;
@@ -11,49 +12,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/genres")
+@SecurityRequirement(name = "Keycloak")
 public class GenreController {
 
     private final GenreService genreService;
 
-    @Autowired
     public GenreController(GenreService genreService) {
         this.genreService = genreService;
     }
 
     @GetMapping
-    public List<Genre> getAllGenres() {
-        return genreService.findAll();
+    public ResponseEntity<List<Genre>> findAll() {
+        return ResponseEntity.ok(genreService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Genre> getGenreById(@PathVariable Integer id) {
-        Genre genre = genreService.findById(id);
-        return ResponseEntity.ok(genre);
+    public ResponseEntity<Genre> findById(@PathVariable Integer id) {
+        return ResponseEntity.ok(genreService.findById(id));
     }
 
     @GetMapping("/name/{name}")
-    public List<Genre> getGenresByName(@PathVariable String name) {
-        return genreService.findByName(name);
+    public ResponseEntity<List<Genre>> findByName(@PathVariable String name) {
+        return ResponseEntity.ok(genreService.findByName(name));
     }
 
-    @GetMapping("/name-ignore-case/{name}")
-    public List<Genre> getGenresByNameIgnoreCase(@PathVariable String name) {
-        return genreService.findByNameIgnoreCase(name);
+    @GetMapping("/search")
+    public ResponseEntity<List<Genre>> searchGenres(@RequestParam String keyword) {
+        return ResponseEntity.ok(genreService.searchGenres(keyword));
     }
 
     @PostMapping
-    public Genre createGenre(@RequestBody Genre genre) {
-        return genreService.save(genre);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Genre> updateGenre(@PathVariable Integer id, @RequestBody Genre genreDetails) {
-        Genre updatedGenre = genreService.updateGenre(id, genreDetails);
-        return ResponseEntity.ok(updatedGenre);
+    public ResponseEntity<Genre> save(@RequestBody Genre genre) {
+        return new ResponseEntity<>(genreService.save(genre), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGenre(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         genreService.deleteById(id);
         return ResponseEntity.noContent().build();
     }

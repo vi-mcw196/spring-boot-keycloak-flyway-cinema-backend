@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import pwr.piisw.cinema.application.utils.Enums;
+import pwr.piisw.cinema.application.utils.RoleType;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
-    private Enums.RoleType role = Enums.RoleType.CUSTOMER;
+    private RoleType role = RoleType.customer;
 
     @Column(unique = true)
     private UUID keycloakId;

@@ -1,5 +1,6 @@
 package pwr.piisw.cinema.application.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import java.util.Objects;
 @Setter
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class BookedSeatId implements Serializable {
     private Integer ticketId;
     private Integer seatId;

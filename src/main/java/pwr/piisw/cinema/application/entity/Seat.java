@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import pwr.piisw.cinema.application.utils.Enums;
+import pwr.piisw.cinema.application.utils.StatusType;
 
 @Entity
 @Data
@@ -24,5 +24,5 @@ public class Seat {
     private int seatNumber;
 
     @Enumerated(EnumType.STRING)
-    private Enums.StatusType status = Enums.StatusType.AVAILABLE;
+    private StatusType status = StatusType.AVAILABLE;
 }

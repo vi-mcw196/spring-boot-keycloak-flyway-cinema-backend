@@ -1,6 +1,5 @@
 package pwr.piisw.cinema.application.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pwr.piisw.cinema.application.entity.Genre;
 import pwr.piisw.cinema.application.repository.GenreRepository;
@@ -14,7 +13,6 @@ public class GenreService {
 
     private final GenreRepository genreRepository;
 
-    @Autowired
     public GenreService(GenreRepository genreRepository) {
         this.genreRepository = genreRepository;
     }
@@ -36,17 +34,18 @@ public class GenreService {
         return genreRepository.findByNameIgnoreCase(name);
     }
 
+    public List<Genre> searchGenres(String keyword) {
+        return genreRepository.searchGenres(keyword);
+    }
+
     public Genre save(Genre genre) {
         return genreRepository.save(genre);
     }
 
     public void deleteById(Integer id) {
+        if (!genreRepository.existsById(id)) {
+            throw new CinemaException(CinemaExceptionType.GENRE_NOT_FOUND);
+        }
         genreRepository.deleteById(id);
-    }
-
-    public Genre updateGenre(Integer id, Genre genreDetails) {
-        Genre genre = findById(id);
-        genre.setName(genreDetails.getName());
-        return genreRepository.save(genre);
     }
 }
