@@ -4,11 +4,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pwr.piisw.cinema.application.entity.Ticket;
 import pwr.piisw.cinema.application.repository.TicketRepository;
+import pwr.piisw.cinema.application.utils.QRCodeGenerator;
 import pwr.piisw.cinema.exception.CinemaException;
 import pwr.piisw.cinema.exception.CinemaExceptionType;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -59,5 +61,26 @@ public class TicketService {
             throw new CinemaException(CinemaExceptionType.TICKET_NOT_FOUND);
         }
         ticketRepository.deleteById(id);
+    }
+
+    @Transactional
+    public byte[] payForTicket(Integer ticketId) {
+        Ticket ticket = findById(ticketId);
+        String qrContent = "Ticket ID: " + ticket.getTicketId();
+        try {
+            return QRCodeGenerator.generateQRCodeImage(qrContent, 200, 200);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate QR code", e);
+        }
+    }
+
+    public boolean validateQRCode(String qrContent) {
+        String[] parts = qrContent.split(": ");
+        if (parts.length != 2 || !"Ticket ID".equals(parts[0])) {
+            return false;
+        }
+        Integer ticketId = Integer.parseInt(parts[1]);
+        Optional<Ticket> ticket = ticketRepository.findById(ticketId);
+        return ticket.isPresent();
     }
 }

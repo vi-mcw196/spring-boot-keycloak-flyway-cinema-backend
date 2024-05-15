@@ -1,6 +1,7 @@
 package pwr.piisw.cinema.application.controller;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,5 +66,19 @@ public class TicketController {
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         ticketService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{ticketId}/pay")
+    public ResponseEntity<byte[]> payForTicket(@PathVariable Integer ticketId) {
+        byte[] qrCode = ticketService.payForTicket(ticketId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=ticket_qr.png");
+        return new ResponseEntity<>(qrCode, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/validateQR")
+    public ResponseEntity<Boolean> validateQRCode(@RequestBody String qrContent) {
+        boolean isValid = ticketService.validateQRCode(qrContent);
+        return ResponseEntity.ok(isValid);
     }
 }

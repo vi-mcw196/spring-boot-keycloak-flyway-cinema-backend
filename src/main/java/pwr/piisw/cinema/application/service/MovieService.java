@@ -52,6 +52,10 @@ public class MovieService {
         return movieRepository.searchMovies(keyword);
     }
 
+    public List<Movie> findMoviesByCinemaName(String cinemaName) {
+        return movieRepository.findMoviesByCinemaName(cinemaName);
+    }
+
     @Transactional
     public Movie save(Movie movie) {
         return movieRepository.save(movie);

@@ -60,4 +60,9 @@ public class MovieController {
         movieService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/cinema/{cinemaName}")
+    public ResponseEntity<List<Movie>> findMoviesByCinemaName(@PathVariable String cinemaName) {
+        return ResponseEntity.ok(movieService.findMoviesByCinemaName(cinemaName));
+    }
 }
