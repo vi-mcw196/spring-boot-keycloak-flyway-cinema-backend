@@ -7,6 +7,8 @@ import pwr.piisw.cinema.application.repository.TicketRepository;
 import pwr.piisw.cinema.application.utils.QRCodeGenerator;
 import pwr.piisw.cinema.exception.CinemaException;
 import pwr.piisw.cinema.exception.CinemaExceptionType;
+import pwr.piisw.cinema.mail.EmailDetails;
+import pwr.piisw.cinema.mail.EmailService;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -16,9 +18,11 @@ import java.util.Optional;
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final EmailService emailService;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository, EmailService emailService) {
         this.ticketRepository = ticketRepository;
+        this.emailService = emailService;
     }
 
     public List<Ticket> findAll() {
@@ -64,13 +68,15 @@ public class TicketService {
     }
 
     @Transactional
-    public byte[] payForTicket(Integer ticketId) {
+    public String payForTicketAndSendEmail(Integer ticketId, EmailDetails emailDetails) {
         Ticket ticket = findById(ticketId);
+
         String qrContent = "Ticket ID: " + ticket.getTicketId();
         try {
-            return QRCodeGenerator.generateQRCodeImage(qrContent, 200, 200);
+            byte[] qrCode = QRCodeGenerator.generateQRCodeImage(qrContent, 200, 200);
+            return emailService.sendMailWithAttachment(emailDetails, qrCode);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to generate QR code", e);
+            throw new RuntimeException("Failed to generate QR code or send email", e);
         }
     }
 
