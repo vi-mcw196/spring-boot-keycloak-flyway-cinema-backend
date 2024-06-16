@@ -14,14 +14,13 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender javaMailSender;
-    private final String sender;
+    private final String sender = "moldlova50@gmail.com";
 
     @Value("classpath:/pwr-logo.png")
     private Resource resourceFile;
 
-    public EmailService(JavaMailSender javaMailSender, @Value("${spring.mail.username}") String sender) {
+    public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
-        this.sender = sender;
     }
 
     public String sendSimpleMail(EmailDetails details) {
